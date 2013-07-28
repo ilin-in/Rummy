@@ -65,9 +65,11 @@
     [self hideStartView];
     ComputerController* controller = [[ComputerController alloc] init];
     controller.computerPlayers = players;
-    [controller loadRummyInstance:[Rummy sharedInstance]];
-    
+    CardTableView* cardTableView = (CardTableView*)[self.view viewWithTag:kCardTableViewTag];
+    [controller loadRummyInstance:[Rummy sharedInstance] withCardTableView:cardTableView];
     self.controller = controller;
+    
+    [self.controller start];
 }
 
 // MARK: private

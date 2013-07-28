@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString* const ACTION_OBJECT;
+
 typedef enum {
     RECIEVE_PLAYER_CARD,
     NEW_PLAYER,

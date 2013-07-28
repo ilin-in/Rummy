@@ -8,6 +8,8 @@
 
 #import "Action.h"
 
+NSString* const ACTION_OBJECT = @"object";
+
 @implementation Action
 
 @end

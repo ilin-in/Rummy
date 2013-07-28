@@ -15,6 +15,7 @@ typedef enum {
 } compare_result_t;
 
 @class Deck;
+@class CardTableView;
 
 @interface Rummy : NSObject
 
@@ -24,6 +25,7 @@ typedef enum {
 @property (nonatomic, strong) Deck* deck;
 @property (nonatomic, strong) NSArray* actions;
 @property (nonatomic, strong) id<ControllerProtocol> controller;
+@property (nonatomic, strong) CardTableView* cardTableView;
 
 + (id)sharedInstance;
 + (compare_result_t)compareCard:(Card*)card1 withCard:(Card*)card2;

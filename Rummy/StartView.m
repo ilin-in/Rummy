@@ -96,7 +96,7 @@ static UIFont* cardCharacters15 = nil;
 
 - (void)startWithComputer {
     if ([self.delegate respondsToSelector:@selector(startView:startGameWithComputer:)]) {
-        [self.delegate startView:self startGameWithComputer:1];
+        [self.delegate startView:self startGameWithComputer:3];
     }
 }
 

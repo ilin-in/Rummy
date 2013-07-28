@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSNumber* playerId;
 @property (nonatomic, strong) NSString* name;
+@property (nonatomic, assign) BOOL isLocalPlayer;
 
 - (void)receive_card:(Card*)card;
 - (void)dump_cards;

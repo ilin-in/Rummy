@@ -12,8 +12,11 @@
 #import "Rummy.h"
 #import "Card.h"
 
+#define MAX_PLAYERS         4
+#define TABLE_TOP_OFFSET    50
+
 typedef enum {
-    TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+    TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT
 } table_pos_t;
 
 @interface CardTableView ()
@@ -47,10 +50,12 @@ typedef enum {
 }
 
 static UIFont* cardCharacters18 = nil;
+static UIFont* cardCharacters15 = nil;
 
 + (void)initialize {
     if (self == [CardTableView class]) {
         cardCharacters18 = [UIFont fontWithName:FONT_CARD_CHARACTERS size:18.f];
+        cardCharacters15 = [UIFont fontWithName:FONT_CARD_CHARACTERS size:11.f];
     }
 }
 
@@ -61,19 +66,30 @@ static UIFont* cardCharacters18 = nil;
     
     [HEX_COLOR(0x008000) set];
     CGContextFillRect(context, rect);
-    
-    [self drawTable:TOP_LEFT isActive:NO color:HEX_COLOR(0x44ca37) context:context];
-    [self drawTable:BOTTOM_LEFT isActive:NO color:HEX_COLOR(0x66ca37) context:context];
-    [self drawTable:TOP_RIGHT isActive:NO color:HEX_COLOR(0x99ca37) context:context];
-    [self drawTable:BOTTOM_RIGHT isActive:NO color:HEX_COLOR(0xffca37) context:context];
+
+    NSUInteger playersCount = MIN(MAX_PLAYERS, self.players.count);
+    NSArray* colors = @[HEX_COLOR(0x44ca37), HEX_COLOR(0x66ca37), HEX_COLOR(0x99ca37), HEX_COLOR(0xffca37)];
+    for (int i = 0; i < playersCount; i++) {
+        CGContextSaveGState(context);
+        [self drawTable:i isActive:YES color:colors[i] context:context];
+        CGContextRestoreGState(context);
+    }
     
     [[UIColor blackColor] set];
-    for (int i = 0; i < self.players.count; i++) {
+    for (int i = 0; i < playersCount; i++) {
         Player* player = self.players[i];
         if (player.name) {
-            [player.name drawInRect:CGRectMake(10.f, 20.f, 30.f, 40.f) withFont:cardCharacters18];
+            NSLog(@"%@", [NSValue valueWithCGRect:CGRectMake(80.f + (i > 1 ? 315.f : .0f), TABLE_TOP_OFFSET + 97.f + (i % 2 == 0 ? .0f : 30.f), 90.f, 20.f)]);
+            [player.name drawInRect:CGRectMake(80.f + (i > 1 ? 315.f : .0f), TABLE_TOP_OFFSET + 97.f + (i % 2 == 0 ? .0f : 30.f), 90.f, 20.f) withFont:cardCharacters15 lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentCenter];
         }
     }
+    
+    if (playersCount < MAX_PLAYERS) {
+        for (int i = playersCount; i < MAX_PLAYERS; i++) {
+            [self drawTable:i isActive:NO color:colors[i] context:context];
+        }
+    }
+    
 }
 
 // MARK: actions
@@ -116,7 +132,7 @@ static UIFont* cardCharacters18 = nil;
     }
     
     CGRect fillRect = CGRectZero;
-    CGPoint drawAtPoint = CGPointMake(self.frame.size.width / 2 - (width * 2 + offset) / 2, 50);
+    CGPoint drawAtPoint = CGPointMake(self.frame.size.width / 2 - (width * 2 + offset) / 2, TABLE_TOP_OFFSET);
     switch (tablePosition) {
         case TOP_LEFT:
             fillRect = CGRectMake(drawAtPoint.x, drawAtPoint.y, width, height);

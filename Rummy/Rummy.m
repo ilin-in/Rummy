@@ -7,6 +7,8 @@
 //
 
 #import "Rummy.h"
+#import "CardTableView.h"
+#import "Action.h"
 
 @implementation Rummy
 
@@ -57,6 +59,11 @@
 
 - (void)step {
     for (int i = 0; i < self.actions.count; i++) {
+        Action* action = self.actions[i];
+        if (action.type == NEW_PLAYER) {
+            Player* player = [action.data objectForKey:ACTION_OBJECT];
+            [self.cardTableView newPlayer:player];
+        }
         
     }
     self.actions = @[];
