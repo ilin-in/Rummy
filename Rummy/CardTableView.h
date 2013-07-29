@@ -20,5 +20,8 @@
 - (void)playerWonRound:(Player*)player;
 - (void)playerWonGame:(Player*)player;
 - (void)playerFailedGame:(Player*)player;
+- (void)initPlayers;
+- (void)playersDrawGame:(NSArray*)players;
+- (void)playersRefresh;
 
 @end

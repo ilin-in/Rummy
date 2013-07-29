@@ -49,12 +49,16 @@
 }
 
 - (void)start {
+    int i = 3;
     while (self.rummy.deck.cards_left) {
         for (Player* player in self.rummy.players) {
             Card* card = [self.rummy.deck pop_top];
             if (!card) {
                 break;
             }
+            if (player.isLocalPlayer) { if (i-- > 0) {
+                [player receive_card:card];     }
+            } else
             [player receive_card:card];
         }
     }
@@ -66,7 +70,7 @@
     
     for (Player* player in self.rummy.players) {
         Action* newPlayerAction = [[Action alloc] init];
-        newPlayerAction.type = NEW_PLAYER;
+        newPlayerAction.type = INIT_PLAYERS;
         newPlayerAction.data = @{ACTION_OBJECT: player};
         [actions addObject:newPlayerAction];
         
@@ -80,15 +84,20 @@
     self.rummy.actions = actions;
     [self.rummy step];
     
-    [self resetRound];
     [self performSelector:@selector(move) withObject:nil afterDelay:2.0];
 }
 
 - (void)resetRound {
     self.rummy.isRound2State = NO;
+    self.rummy.secondRoundPlayers = nil;
     for (Player* player in self.rummy.players) {
         player.topCardsOnTheTable = 0;
     }
+    
+    Action* playersRefreshAction = [[Action alloc] init];
+    playersRefreshAction.type = PLAYERS_REFRESH;
+    self.rummy.actions = @[playersRefreshAction];
+    [self.rummy step];
 }
 
 - (void)didTapUserOnSelfDeck {
@@ -103,18 +112,19 @@
             }
             Action* putCardAction = [[Action alloc] init];
             putCardAction.type = PLAYER_PUT_CARD;
-            putCardAction.data = @{ACTION_OBJECT: player, ACTION_OBJECT2:@(1)};
+            putCardAction.data = @{ACTION_OBJECT: player, ACTION_OBJECT2:@(self.rummy.isRound2State ? 2 : 1)};
             [actions addObject:putCardAction];
-            player.topCardsOnTheTable = 1;
+            player.topCardsOnTheTable = self.rummy.isRound2State ? 2 : 1;
         }
     }
     
     self.rummy.actions = actions;
     [self.rummy step];
-    [self performSelector:@selector(round) withObject:nil afterDelay:1.0];
+    [self performSelector:@selector(round) withObject:nil afterDelay:1.5];
 }
 
 - (void)round {
+    NSMutableArray* actions = [NSMutableArray array];
     NSMutableArray* roundCards = [NSMutableArray array];
     NSArray* roundPlayers = self.rummy.isRound2State ? self.rummy.secondRoundPlayers : self.rummy.players;
     for (Player* player in roundPlayers) {
@@ -139,20 +149,56 @@
         }
     }
     
-    NSMutableArray* maxIds = [NSMutableArray array];
+    NSMutableArray* playersWithMaxCard = [NSMutableArray array];
     for (int i = 0; i < roundCards.count; i++) {
         Card* card = roundCards[i];
         if ([Rummy compareCard:card withCard:maxCard] == EQUAL) {
-            [maxIds addObject:@(i)];
+            [playersWithMaxCard addObject:roundPlayers[i]];
         }
     }
     
-    // check if users failed game
+    // check if players failed game
+    for (Player* player in roundPlayers) {
+        BOOL isPlayerWithMaxCard = NO;
+        for (Player* playerWithMaxCard in playersWithMaxCard) {
+            if (playerWithMaxCard.playerId.intValue == player.playerId.intValue) {
+                isPlayerWithMaxCard = YES;
+                break;
+            }
+        }
+        if (!isPlayerWithMaxCard && player.deck.cards.count < 2) {
+            [actions addObject:[self removePlayer:player]];
+        }
+        else if (!isPlayerWithMaxCard && self.rummy.isRound2State && player.deck.cards.count < 3) {
+            [actions addObject:[self removePlayer:player]];
+        }
+    }
+    if (self.rummy.players.count == 1) {
+        Action* playerWonAction = [[Action alloc] init];
+        playerWonAction.type = PLAYER_WON_ROUND;
+        playerWonAction.data = @{ACTION_OBJECT: self.rummy.players[0]};
+        [actions addObject:playerWonAction];
+        
+        self.rummy.actions = actions;
+        [self.rummy step];
+        return;
+    }
     
     // second round
-    if (maxIds.count > 1) {
+    if (playersWithMaxCard.count > 1) {
+        // Draw
+        if (self.rummy.isRound2State) {
+            Action* playersDrawAction = [[Action alloc] init];
+            playersDrawAction.type = PLAYERS_DRAW_GAME;
+            playersDrawAction.data = @{ACTION_OBJECT: playersWithMaxCard};
+            [actions addObject:playersDrawAction];
+            self.rummy.actions = actions;
+            [self.rummy step];
+            
+            return;
+        }
         self.rummy.isRound2State = YES;
-        
+        self.rummy.secondRoundPlayers = playersWithMaxCard;
         [self move];
         return;
     }
@@ -167,7 +213,7 @@
         }
     }
     // add to win user
-    Player* winPlayer =  roundPlayers[((NSNumber*)maxIds[0]).intValue];
+    Player* winPlayer = playersWithMaxCard[0];
     for (Card* card in cards) {
         [winPlayer.deck add_card:card];
     }
@@ -176,8 +222,9 @@
     Action* playerWonAction = [[Action alloc] init];
     playerWonAction.type = PLAYER_WON_ROUND;
     playerWonAction.data = @{ACTION_OBJECT: winPlayer};
+    [actions addObject:playerWonAction];
     
-    self.rummy.actions = @[playerWonAction];
+    self.rummy.actions = actions;
     [self.rummy step];
     
     // reset round
@@ -185,21 +232,52 @@
     [self performSelector:@selector(move) withObject:nil afterDelay:1.0];
 }
 
+- (Action*)removePlayer:(Player*)player {
+    NSMutableArray* players = [NSMutableArray array];
+    for (Player* rummyPlayer in self.rummy.players) {
+        if (player != rummyPlayer) {
+            [players addObject:rummyPlayer];
+        }
+    }
+    self.rummy.players = players;
+    
+    NSMutableArray* secondRoundPlayers = [NSMutableArray array];
+    for (Player* rummyPlayer in self.rummy.secondRoundPlayers) {
+        if (player != rummyPlayer) {
+            [secondRoundPlayers addObject:rummyPlayer];
+        }
+    }
+    self.rummy.secondRoundPlayers = secondRoundPlayers;
+    
+    Action* playerFailedAction = [[Action alloc] init];
+    playerFailedAction.type = PLAYER_FAILED_GAME;
+    playerFailedAction.data = @{ACTION_OBJECT: player};
+    return playerFailedAction;
+}
+
 - (void)move {
+    BOOL localPlayerInGame = NO;
+    
     NSMutableArray* actions = [NSMutableArray array];
-    for (Player* player in self.rummy.players) {
+    NSArray* roundPlayers = self.rummy.isRound2State ? self.rummy.secondRoundPlayers : self.rummy.players;
+    for (Player* player in roundPlayers) {
         if (player.isLocalPlayer) {
+            localPlayerInGame = YES;
             continue;
         }
         Action* putCardAction = [[Action alloc] init];
         putCardAction.type = PLAYER_PUT_CARD;
-        putCardAction.data = @{ACTION_OBJECT: player, ACTION_OBJECT2:@(1)};
+        putCardAction.data = @{ACTION_OBJECT: player, ACTION_OBJECT2:@(self.rummy.isRound2State ? 2 : 1)};
         [actions addObject:putCardAction];
-        player.topCardsOnTheTable = 1;
+        player.topCardsOnTheTable = self.rummy.isRound2State ? 2 : 1;
     }
     
     self.rummy.actions = actions;
     [self.rummy step];
+    
+    if (!localPlayerInGame) {
+        [self performSelector:@selector(round) withObject:nil afterDelay:1.0];
+    }
 }
 
 @end

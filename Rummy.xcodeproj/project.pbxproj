@@ -71,6 +71,7 @@
 		099323DD17A56A1B00903AB6 /* ComputerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323DC17A56A1B00903AB6 /* ComputerController.m */; };
 		099323E017A56A2C00903AB6 /* BluetoothController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323DF17A56A2C00903AB6 /* BluetoothController.m */; };
 		099323E317A56A3800903AB6 /* OnlineController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323E217A56A3800903AB6 /* OnlineController.m */; };
+		09B1F93117A6D32600D822C1 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,6 +166,7 @@
 		099323E117A56A3800903AB6 /* OnlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnlineController.h; sourceTree = "<group>"; };
 		099323E217A56A3800903AB6 /* OnlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnlineController.m; sourceTree = "<group>"; };
 		099323E417A56B8100903AB6 /* ControllerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControllerProtocol.h; sourceTree = "<group>"; };
+		09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09B1F93117A6D32600D822C1 /* CoreBluetooth.framework in Frameworks */,
 				0993237917A2D92F00903AB6 /* QuartzCore.framework in Frameworks */,
 				0993232717A2563D00903AB6 /* UIKit.framework in Frameworks */,
 				0993232917A2563D00903AB6 /* Foundation.framework in Frameworks */,
@@ -214,6 +217,7 @@
 		0993232517A2563D00903AB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */,
 				0993237817A2D92F00903AB6 /* QuartzCore.framework */,
 				0993232617A2563D00903AB6 /* UIKit.framework */,
 				0993232817A2563D00903AB6 /* Foundation.framework */,
@@ -711,6 +715,7 @@
 				0993235D17A2563D00903AB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0993235E17A2563D00903AB6 /* Build configuration list for PBXNativeTarget "RummyTests" */ = {
 			isa = XCConfigurationList;
@@ -719,6 +724,7 @@
 				0993236017A2563D00903AB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

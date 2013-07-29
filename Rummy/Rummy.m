@@ -65,9 +65,8 @@
 - (void)step {
     for (int i = 0; i < self.actions.count; i++) {
         Action* action = self.actions[i];
-        if (action.type == NEW_PLAYER) {
-//            Player* player = action.data[ACTION_OBJECT];
-//            [self.cardTableView newPlayer:player];
+        if (action.type == INIT_PLAYERS) {
+            [self.cardTableView initPlayers];
         }
         else if (action.type == PUT_DECK) {
             [self.cardTableView putDeck:self.deck];
@@ -92,6 +91,13 @@
         else if (action.type == PLAYER_FAILED_GAME) {
             Player* player = action.data[ACTION_OBJECT];
             [self.cardTableView playerFailedGame:player];
+        }
+        else if (action.type == PLAYERS_DRAW_GAME) {
+            NSArray* players = action.data[ACTION_OBJECT];
+            [self.cardTableView playersDrawGame:players];
+        }
+        else if (action.type == PLAYERS_REFRESH) {
+            [self.cardTableView playersRefresh];
         }
     }
     self.actions = @[];
