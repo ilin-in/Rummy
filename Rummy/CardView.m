@@ -47,6 +47,7 @@ static UIFont* cardCharacters15 = nil;
         card.suit = NO_SUIT;
     }
     _card = card;
+    [self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect

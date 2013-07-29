@@ -37,6 +37,7 @@ typedef enum
 
 @interface Card : NSObject
 
+@property (nonatomic, assign) NSUInteger cardId;
 @property (nonatomic, assign) suit_t suit;
 @property (nonatomic, assign) number_t number;
 

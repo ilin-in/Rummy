@@ -22,12 +22,14 @@ typedef enum {
 @property (nonatomic, strong) NSNumber* gameId;
 @property (nonatomic, strong) NSNumber* currentUserId;
 @property (nonatomic, strong) NSArray* players;
+@property (nonatomic, strong) NSArray* secondRoundPlayers;
 @property (nonatomic, strong) Deck* deck;
 @property (nonatomic, strong) NSArray* actions;
 @property (nonatomic, strong) id<ControllerProtocol> controller;
 @property (nonatomic, strong) CardTableView* cardTableView;
+@property (nonatomic, assign) BOOL isRound2State;
 
-+ (id)sharedInstance;
++ (Rummy*)sharedInstance;
 + (compare_result_t)compareCard:(Card*)card1 withCard:(Card*)card2;
 + (void)step;
 

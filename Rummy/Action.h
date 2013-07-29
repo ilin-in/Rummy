@@ -9,14 +9,15 @@
 #import <Foundation/Foundation.h>
 
 extern NSString* const ACTION_OBJECT;
+extern NSString* const ACTION_OBJECT2;
 
 typedef enum {
-    RECIEVE_PLAYER_CARD,
     NEW_PLAYER,
+    PUT_DECK,
     PLAYER_PUT_CARD,
-    PLAYER_WIN_ROUND,
+    PLAYER_WON_ROUND,
     ROUND_2,
-    RECIEVE_INITIAL_CARDS,
+    RECEIVE_INITIAL_CARDS,
     PLAYER_FAILED_GAME,
     PLAYER_WON_GAME,
 } action_t;

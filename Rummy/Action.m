@@ -9,6 +9,7 @@
 #import "Action.h"
 
 NSString* const ACTION_OBJECT = @"object";
+NSString* const ACTION_OBJECT2 = @"object2";
 
 @implementation Action
 

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#define CARD_SIZE   { 70.f, 95.f }
+#define CARD_SIZE   (CGSize){ 70.f, 95.f }
 
 extern NSString* const FONT_CARD_CHARACTERS;
 

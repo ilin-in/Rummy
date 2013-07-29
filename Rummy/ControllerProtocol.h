@@ -13,5 +13,6 @@
 @protocol ControllerProtocol <NSObject>
 - (void)loadRummyInstance:(Rummy*)rummy withCardTableView:(CardTableView*)cardTableView;
 - (void)start;
+- (void)didTapUserOnSelfDeck;
 
 @end

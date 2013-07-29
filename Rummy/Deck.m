@@ -13,8 +13,6 @@
 
 @interface Deck ()
 
-@property (nonatomic, strong) NSArray* cards;
-
 @end
 
 @implementation Deck
@@ -40,6 +38,7 @@
     }
     Card* card = [[Card alloc] init];
     if (w_jokers && (index == 0 || index == 1)) {
+        card.cardId = index;
         card.suit = NO_SUIT;
         card.number = JOKER;
         return card;
@@ -48,6 +47,7 @@
     int firstSuitIndex = w_jokers ? 2 : 0;
     suit_t suit = ((index - firstSuitIndex) / 13) + 1;
     number_t number = ((index - firstSuitIndex) % 13) + 1;
+    card.cardId = index;
     card.suit = suit;
     card.number = number;
     

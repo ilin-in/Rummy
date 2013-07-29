@@ -11,24 +11,28 @@
 #import "Player.h"
 #import "Rummy.h"
 #import "Card.h"
+#import "Deck.h"
 
 #define MAX_PLAYERS         4
 #define TABLE_TOP_OFFSET    50
 
+#define kDeckBacksTag       1
+
+#define kCardBacksTag   100
+#define kCardOnDeckTag  150
+#define kCardOnDeckSecondRoundTag  200
+
 typedef enum {
-    TOP_LEFT, TOP_RIGHT, BOTTOM_RIGHT, BOTTOM_LEFT
+    TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT
 } table_pos_t;
 
 @interface CardTableView ()
 
 @property (nonatomic, strong) UILabel* lblTimer;
-@property (nonatomic, strong) Rummy* rummy;
-@property (nonatomic, strong) NSMutableArray* players;
 
 @end
 
 // Actions
-//    - recieve player card (for user)
 //    - new player with name
 //    - player put card
 //    - player win round
@@ -44,7 +48,6 @@ typedef enum {
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
-        self.players = [NSMutableArray array];
     }
     return self;
 }
@@ -67,8 +70,8 @@ static UIFont* cardCharacters15 = nil;
     [HEX_COLOR(0x008000) set];
     CGContextFillRect(context, rect);
 
-    NSUInteger playersCount = MIN(MAX_PLAYERS, self.players.count);
-    NSArray* colors = @[HEX_COLOR(0x44ca37), HEX_COLOR(0x66ca37), HEX_COLOR(0x99ca37), HEX_COLOR(0xffca37)];
+    NSUInteger playersCount = MIN(MAX_PLAYERS, [Rummy sharedInstance].players.count);
+    NSArray* colors = @[HEX_COLOR(0x44ca37), HEX_COLOR(0x66ca37), HEX_COLOR(0x88ca37), HEX_COLOR(0xaaca37)];
     for (int i = 0; i < playersCount; i++) {
         CGContextSaveGState(context);
         [self drawTable:i isActive:YES color:colors[i] context:context];
@@ -77,9 +80,8 @@ static UIFont* cardCharacters15 = nil;
     
     [[UIColor blackColor] set];
     for (int i = 0; i < playersCount; i++) {
-        Player* player = self.players[i];
+        Player* player = [Rummy sharedInstance].players[i];
         if (player.name) {
-            NSLog(@"%@", [NSValue valueWithCGRect:CGRectMake(80.f + (i > 1 ? 315.f : .0f), TABLE_TOP_OFFSET + 97.f + (i % 2 == 0 ? .0f : 30.f), 90.f, 20.f)]);
             [player.name drawInRect:CGRectMake(80.f + (i > 1 ? 315.f : .0f), TABLE_TOP_OFFSET + 97.f + (i % 2 == 0 ? .0f : 30.f), 90.f, 20.f) withFont:cardCharacters15 lineBreakMode:NSLineBreakByTruncatingTail alignment:NSTextAlignmentCenter];
         }
     }
@@ -94,12 +96,158 @@ static UIFont* cardCharacters15 = nil;
 
 // MARK: actions
 
-- (void)newPlayer:(Player*)player {
-    [self.players addObject:player];
-    [self setNeedsDisplay];
+- (void)putDeck:(Deck*)deck {
+    CardView* card = [[CardView alloc] initWithFrame:(CGRect){{self.frame.size.width / 2 - CARD_SIZE.width / 2, self.frame.size.height / 2 - CARD_SIZE.height / 2}, CARD_SIZE}];
+    card.tag = kDeckBacksTag;
+    [self addSubview:card];
+}
+
+- (void)receiveInitialCards:(Player*)player {
+    table_pos_t tablePos = [self tablePosForPlayer:player];
+    double speed = 7.5;
+    int animCards = 6;
+    NSMutableArray* cards = [NSMutableArray array];
+    
+    double delayInSeconds = (double)tablePos/8.;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        for (int i = 0; i < animCards; i++) {
+            CardView* card = [[CardView alloc] initWithFrame:(CGRect){{self.frame.size.width / 2 - CARD_SIZE.width / 2, self.frame.size.height / 2 - CARD_SIZE.height / 2}, CARD_SIZE}];
+            if (i == animCards - 1) {
+                if (player.isLocalPlayer) {
+                    card.card = player.deck.cards[0];
+                    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapUserOnSelfCard:)];
+                    card.userInteractionEnabled = YES;
+                    [card addGestureRecognizer:tap];
+                }
+                card.tag = kCardBacksTag + tablePos;
+            }
+            else {
+                [cards addObject:card];
+            }
+            [self addSubview:card];
+            
+            double delayInSeconds = (double)i/speed;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [UIView animateWithDuration:.5 animations:^{
+                    card.frame = (CGRect){{90.f + (tablePos > 1 ? 305.f : .0f), TABLE_TOP_OFFSET + (tablePos % 2 == 0 ? .0f : 145.f)}, CARD_SIZE};
+                }];
+            });
+        }
+    });
+    
+    delayInSeconds += animCards/speed + .4;
+    popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        for (CardView* cardView in cards) {
+            [cardView removeFromSuperview];
+        }
+    });
+    
+    CardView* deckBack = (CardView*)[self viewWithTag:kDeckBacksTag];
+    if (deckBack) {
+        delayInSeconds = (double)3/8.;
+        delayInSeconds += animCards/speed - .3;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [UIView animateWithDuration:1.5 animations:^{
+                deckBack.frame = (CGRect){{90.f + 305.f, TABLE_TOP_OFFSET + 145.f}, CARD_SIZE};
+            } completion:^(BOOL finished) {
+                [deckBack removeFromSuperview];
+            }];
+        });
+    }
+}
+
+- (void)playerPutCard:(Player*)player withLevel:(NSUInteger)level {
+    table_pos_t tablePos = [self tablePosForPlayerId:player.playerId.integerValue];
+    double delayInSeconds = (double)tablePos/8.;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        CardView* card = (CardView*)[self viewWithTag:kCardBacksTag + tablePos];
+        [UIView animateWithDuration:.3 animations:^{
+            if (player.deck.cards.count > level) {
+                CardView* card2 = [[CardView alloc] initWithFrame:card.frame];
+                if (player.isLocalPlayer) {
+                    if (player.deck.cards.count > level) {
+                        card2.card = player.deck.cards[level];
+                    }
+                    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapUserOnSelfCard:)];
+                    card2.userInteractionEnabled = YES;
+                    [card2 addGestureRecognizer:tap];
+                }
+                card2.tag = card.tag;
+                [self addSubview:card2];
+            }
+            card.userInteractionEnabled = NO;
+            card.tag = (level == 1 ? kCardOnDeckTag : kCardOnDeckSecondRoundTag) + tablePos;
+            card.frame = (CGRect){{200.f + (tablePos > 1 ? 95.f : .0f), 20.f + TABLE_TOP_OFFSET + (tablePos % 2 == 0 ? .0f : 105.f)}, CARD_SIZE};
+            if (player.deck.cards.count > (level - 1)) {
+                card.card = player.deck.cards[level - 1];
+            }
+        }];
+        
+    });
+}
+
+- (void)playerWonRound:(Player*)player {
+    NSMutableArray* cards = [NSMutableArray array];
+    table_pos_t tablePos = [self tablePosForPlayerId:player.playerId.integerValue];
+    for (int i = 0; i < [[Rummy sharedInstance] players].count; i++) {
+        CardView* cardView = (CardView*)[self viewWithTag:kCardOnDeckTag + i];
+        if (cardView) {
+            [UIView animateWithDuration:.5 animations:^{
+                cardView.frame = (CGRect){{90.f + (tablePos > 1 ? 305.f : .0f), TABLE_TOP_OFFSET + (tablePos % 2 == 0 ? .0f : 145.f)}, CARD_SIZE};
+            }];
+            [cards addObject:cardView];
+        }
+    }
+    
+    double delayInSeconds = .6;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        for (CardView* cardView in cards) {
+            [cardView removeFromSuperview];
+        }
+    });
+}
+
+- (void)playerWonGame:(Player*)player {
+    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ won the game!", nil), player.name] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+- (void)playerFailedGame:(Player*)player {
+    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"%@ failed the game!", nil), player.name] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+}
+
+// MARK:
+
+- (void)didTapUserOnSelfCard:(UIGestureRecognizer*)recognizer {
+    [[Rummy sharedInstance].controller didTapUserOnSelfDeck];
 }
 
 // MARK: private
+
+- (table_pos_t)tablePosForPlayerId:(NSUInteger)playerId {
+    for (int i = 0; i < [Rummy sharedInstance].players.count; i++) {
+        Player* player = [Rummy sharedInstance].players[i];
+        if (player.playerId.integerValue == playerId) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+- (table_pos_t)tablePosForPlayer:(Player*)player {
+    for (int i = 0; i < [Rummy sharedInstance].players.count; i++) {
+        Player* _player = [Rummy sharedInstance].players[i];
+        if (player.playerId == _player.playerId) {
+            return i;
+        }
+    }
+    return 0;
+}
 
 - (UILabel *)lblTimer {
     if (!_lblTimer) {

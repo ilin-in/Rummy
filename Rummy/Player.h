@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 @class Card;
+@class Deck;
 
 @interface Player : NSObject
 
 @property (nonatomic, strong) NSNumber* playerId;
 @property (nonatomic, strong) NSString* name;
 @property (nonatomic, assign) BOOL isLocalPlayer;
+@property (nonatomic, strong) Deck* deck;
+@property (nonatomic, assign) NSUInteger topCardsOnTheTable;
 
 - (void)receive_card:(Card*)card;
 - (void)dump_cards;

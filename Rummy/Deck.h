@@ -11,6 +11,8 @@
 
 @interface Deck : NSObject
 
+@property (nonatomic, strong) NSArray* cards;
+
 - (id)initWithJokers:(BOOL)w_jokers full:(BOOL)full;
 
 - (void)dump_deck;

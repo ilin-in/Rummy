@@ -62,7 +62,6 @@
     // User -> action -> step
     
     // Actions
-//    - recieve player card
 //    - new player with name
 //    - player put card
 //    - player win round

@@ -11,8 +11,6 @@
 
 @interface Player ()
 
-@property (nonatomic, strong) NSString* my_name;
-@property (nonatomic, strong) Deck* my_deck;
 @property (nonatomic, strong) NSArray* tableCards;
 
 @end
@@ -21,17 +19,17 @@
 
 - (id)init {
     if ((self = [super init])) {
-        self.my_deck = [[Deck alloc] initWithJokers:YES full:NO];
+        self.deck = [[Deck alloc] initWithJokers:YES full:NO];
     }
     return self;
 }
 
 - (void)dump_cards {
-    [self.my_deck dump_deck];
+    [self.deck dump_deck];
 }
 
 - (void)receive_card:(Card*)card {
-    [self.my_deck add_card:card];
+    [self.deck add_card:card];
 }
 
 @end

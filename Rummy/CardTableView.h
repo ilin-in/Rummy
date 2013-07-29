@@ -9,10 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @class Player;
+@class Deck;
 
 @interface CardTableView : UIView
 
 // Actions
-- (void)newPlayer:(Player*)player;
+- (void)putDeck:(Deck*)deck;
+- (void)receiveInitialCards:(Player*)player;
+- (void)playerPutCard:(Player*)player withLevel:(NSUInteger)level;
+- (void)playerWonRound:(Player*)player;
+- (void)playerWonGame:(Player*)player;
+- (void)playerFailedGame:(Player*)player;
 
 @end
