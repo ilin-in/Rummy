@@ -173,6 +173,7 @@
             [actions addObject:[self removePlayer:player]];
         }
     }
+    NSLog(@"self.rummy.players.count: %d", self.rummy.players.count);
     if (self.rummy.players.count == 1) {
         Action* playerWonAction = [[Action alloc] init];
         playerWonAction.type = PLAYER_WON_ROUND;

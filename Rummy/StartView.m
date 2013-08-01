@@ -78,6 +78,7 @@ static UIFont* cardCharacters15 = nil;
         [_btnPlayWithFriends setTitle:NSLocalizedString(@"Start with Friends", nil) forState:UIControlStateNormal];
         [_btnPlayWithFriends setBackgroundColor:HEX_COLOR(0x5c82c6)];
         _btnPlayWithFriends.titleLabel.font = cardCharacters15;
+        [_btnPlayWithFriends addTarget:self action:@selector(startWithFriends) forControlEvents:UIControlEventTouchUpInside];
     }
     return _btnPlayWithFriends;
 }
@@ -97,6 +98,12 @@ static UIFont* cardCharacters15 = nil;
 - (void)startWithComputer {
     if ([self.delegate respondsToSelector:@selector(startView:startGameWithComputer:)]) {
         [self.delegate startView:self startGameWithComputer:3];
+    }
+}
+
+- (void)startWithFriends {
+    if ([self.delegate respondsToSelector:@selector(startViewStartGameWithFriends:)]) {
+        [self.delegate startViewStartGameWithFriends:self];
     }
 }
 

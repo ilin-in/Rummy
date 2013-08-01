@@ -51,6 +51,7 @@
 //        }
 //        [self.view addSubview:cardView];
 //    }
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,6 +66,16 @@
     [self hideStartView];
     ComputerController* controller = [[ComputerController alloc] init];
     controller.computerPlayers = players;
+    CardTableView* cardTableView = (CardTableView*)[self.view viewWithTag:kCardTableViewTag];
+    [controller loadRummyInstance:[Rummy sharedInstance] withCardTableView:cardTableView];
+    self.controller = controller;
+    
+    [self.controller start];
+}
+
+- (void)startViewStartGameWithFriends:(StartView *)view {
+    [self hideStartView];
+    BluetoothController* controller = [[BluetoothController alloc] init];
     CardTableView* cardTableView = (CardTableView*)[self.view viewWithTag:kCardTableViewTag];
     [controller loadRummyInstance:[Rummy sharedInstance] withCardTableView:cardTableView];
     self.controller = controller;

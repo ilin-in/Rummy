@@ -277,7 +277,7 @@ static UIFont* cardCharacters15 = nil;
     [players enumerateObjectsUsingBlock:^(Player* obj, NSUInteger idx, BOOL *stop) {
         [names addObject:obj.name];
     }];
-    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Draw between %@!", nil), [names componentsJoinedByString:@","]] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+    [[[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Draw between %@!", nil), [names componentsJoinedByString:@", "]] message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
 }
 
 // MARK:

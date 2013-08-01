@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0901778A17AAB30A00E2BD93 /* MatchmakingServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0901778917AAB30A00E2BD93 /* MatchmakingServer.m */; };
+		0901778C17AAB68700E2BD93 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0901778B17AAB68700E2BD93 /* GameKit.framework */; };
 		0993232717A2563D00903AB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0993232617A2563D00903AB6 /* UIKit.framework */; };
 		0993232917A2563D00903AB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0993232817A2563D00903AB6 /* Foundation.framework */; };
 		0993232B17A2563D00903AB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0993232A17A2563D00903AB6 /* CoreGraphics.framework */; };
@@ -71,7 +73,7 @@
 		099323DD17A56A1B00903AB6 /* ComputerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323DC17A56A1B00903AB6 /* ComputerController.m */; };
 		099323E017A56A2C00903AB6 /* BluetoothController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323DF17A56A2C00903AB6 /* BluetoothController.m */; };
 		099323E317A56A3800903AB6 /* OnlineController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099323E217A56A3800903AB6 /* OnlineController.m */; };
-		09B1F93117A6D32600D822C1 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */; };
+		09A5C69B17AAB7F100B00C65 /* MatchmakingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 09A5C69A17AAB7F100B00C65 /* MatchmakingClient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +87,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0901778817AAB30A00E2BD93 /* MatchmakingServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchmakingServer.h; sourceTree = "<group>"; };
+		0901778917AAB30A00E2BD93 /* MatchmakingServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchmakingServer.m; sourceTree = "<group>"; };
+		0901778B17AAB68700E2BD93 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		0993232317A2563D00903AB6 /* Rummy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rummy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0993232617A2563D00903AB6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0993232817A2563D00903AB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -166,6 +171,8 @@
 		099323E117A56A3800903AB6 /* OnlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnlineController.h; sourceTree = "<group>"; };
 		099323E217A56A3800903AB6 /* OnlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnlineController.m; sourceTree = "<group>"; };
 		099323E417A56B8100903AB6 /* ControllerProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ControllerProtocol.h; sourceTree = "<group>"; };
+		09A5C69917AAB7F100B00C65 /* MatchmakingClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatchmakingClient.h; sourceTree = "<group>"; };
+		09A5C69A17AAB7F100B00C65 /* MatchmakingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatchmakingClient.m; sourceTree = "<group>"; };
 		09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -174,7 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				09B1F93117A6D32600D822C1 /* CoreBluetooth.framework in Frameworks */,
+				0901778C17AAB68700E2BD93 /* GameKit.framework in Frameworks */,
 				0993237917A2D92F00903AB6 /* QuartzCore.framework in Frameworks */,
 				0993232717A2563D00903AB6 /* UIKit.framework in Frameworks */,
 				0993232917A2563D00903AB6 /* Foundation.framework in Frameworks */,
@@ -217,6 +224,7 @@
 		0993232517A2563D00903AB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0901778B17AAB68700E2BD93 /* GameKit.framework */,
 				09B1F93017A6D32600D822C1 /* CoreBluetooth.framework */,
 				0993237817A2D92F00903AB6 /* QuartzCore.framework */,
 				0993232617A2563D00903AB6 /* UIKit.framework */,
@@ -300,6 +308,10 @@
 				099323E117A56A3800903AB6 /* OnlineController.h */,
 				099323E217A56A3800903AB6 /* OnlineController.m */,
 				099323E417A56B8100903AB6 /* ControllerProtocol.h */,
+				0901778817AAB30A00E2BD93 /* MatchmakingServer.h */,
+				0901778917AAB30A00E2BD93 /* MatchmakingServer.m */,
+				09A5C69917AAB7F100B00C65 /* MatchmakingClient.h */,
+				09A5C69A17AAB7F100B00C65 /* MatchmakingClient.m */,
 			);
 			name = Host;
 			sourceTree = "<group>";
@@ -531,6 +543,8 @@
 				099323DD17A56A1B00903AB6 /* ComputerController.m in Sources */,
 				099323E017A56A2C00903AB6 /* BluetoothController.m in Sources */,
 				099323E317A56A3800903AB6 /* OnlineController.m in Sources */,
+				0901778A17AAB30A00E2BD93 /* MatchmakingServer.m in Sources */,
+				09A5C69B17AAB7F100B00C65 /* MatchmakingClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

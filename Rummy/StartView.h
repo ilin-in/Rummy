@@ -19,5 +19,6 @@
 @protocol StartViewDelegate <NSObject>
 
 - (void)startView:(StartView*)view startGameWithComputer:(NSUInteger)players;
+- (void)startViewStartGameWithFriends:(StartView*)view;
 
 @end
